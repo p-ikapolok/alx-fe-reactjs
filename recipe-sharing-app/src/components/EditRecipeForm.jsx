@@ -5,13 +5,13 @@ const EditRecipeForm = ({ recipe }) => {
   const [formData, setFormData] = useState(recipe);
   const updateRecipe = useRecipeStore(state => state.updateRecipe);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     updateRecipe(formData);
   };
 
