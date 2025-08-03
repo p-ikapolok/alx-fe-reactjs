@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { fetchAdvancedUsers } from '../services/githubService';
-import '../styles/Search.css'; // ✅ Keep using external CSS
+import { searchUsers, fetchUserData } from '../services/githubService'; // ✅ both imported
+import '../styles/Search.css';
 
 const Search = () => {
   const [form, setForm] = useState({
@@ -24,13 +24,27 @@ const Search = () => {
     setUsers([]);
 
     try {
-      const result = await fetchAdvancedUsers({
-        username: form.username,
-        location: form.location,
-        minRepos: form.minRepos,
-      });
+      // Build query string
+      let query = form.username;
+      if (form.location) query += `+location:${form.location}`;
+      if (form.minRepos) query += `+repos:>=${form.minRepos}`;
 
-      setUsers(result);
+      const basicResult = await searchUsers(query);
+
+      // ✅ Explicitly use fetchUserData here
+      const detailedUsers = await Promise.all(
+        basicResult.items.map(async (user) => {
+          try {
+            const fullUser = await fetchUserData(user.login);
+            return fullUser;
+          } catch {
+            return null;
+          }
+        })
+      );
+
+      // Remove any failed (null) users
+      setUsers(detailedUsers.filter(Boolean));
     } catch (err) {
       console.error(err);
       setError("Looks like we can't find the user(s)");
