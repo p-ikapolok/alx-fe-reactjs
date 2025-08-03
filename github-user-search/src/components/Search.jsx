@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { fetchUserData } from '../services/githubService';
-import '../styles/Search.css'; // ✅ Import external CSS
+import { searchUsers } from '../services/githubService'; // Use search API
+import '../styles/Search.css'; // ✅ Keep using external CSS
 
 const Search = () => {
-  const [form, setForm] = useState({ username: '' });
-  const [user, setUser] = useState(null);
+  const [form, setForm] = useState({
+    username: '',
+    location: '',
+    minRepos: ''
+  });
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -16,13 +20,18 @@ const Search = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setUser(null);
+    setUsers([]);
 
     try {
-      const result = await fetchUserData(form.username);
-      setUser(result);
+      let query = form.username;
+      if (form.location) query += `+location:${form.location}`;
+      if (form.minRepos) query += `+repos:>=${form.minRepos}`;
+
+      const result = await searchUsers(query);
+      setUsers(result.items);
     } catch (err) {
-      setError("Looks like we cant find the user");
+      console.error(err);
+      setError("Looks like we can't find the user(s)");
     } finally {
       setLoading(false);
     }
@@ -41,6 +50,20 @@ const Search = () => {
             onChange={handleChange}
             placeholder="Enter GitHub username"
           />
+          <input
+            type="text"
+            name="location"
+            value={form.location}
+            onChange={handleChange}
+            placeholder="Location (optional)"
+          />
+          <input
+            type="number"
+            name="minRepos"
+            value={form.minRepos}
+            onChange={handleChange}
+            placeholder="Min Repositories (optional)"
+          />
           <button type="submit">Search</button>
         </form>
 
@@ -48,13 +71,22 @@ const Search = () => {
 
         {error && <p style={{ marginTop: '1rem', color: '#f87171' }}>{error}</p>}
 
-        {user && (
-          <div className="result-card">
-            <img src={user.avatar_url} alt={user.login} />
-            <h2>{user.name || user.login}</h2>
-            <a href={user.html_url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6' }}>
-              View Profile
-            </a>
+        {users.length > 0 && (
+          <div className="results-list">
+            {users.map((user) => (
+              <div key={user.id} className="result-card">
+                <img src={user.avatar_url} alt={user.login} />
+                <h2>{user.login}</h2>
+                <a
+                  href={user.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#3b82f6' }}
+                >
+                  View Profile
+                </a>
+              </div>
+            ))}
           </div>
         )}
       </div>
