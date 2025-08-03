@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { searchUsers } from '../services/githubService'; // Use search API
+import { fetchAdvancedUsers } from '../services/githubService';
 import '../styles/Search.css'; // ✅ Keep using external CSS
 
 const Search = () => {
@@ -8,12 +8,6 @@ const Search = () => {
     location: '',
     minRepos: ''
   });
-  
-  const result = await searchUsers({
-  username: form.username,
-  location: form.location,
-  minRepos: form.minRepos,
- });
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,12 +24,13 @@ const Search = () => {
     setUsers([]);
 
     try {
-      let query = form.username;
-      if (form.location) query += `+location:${form.location}`;
-      if (form.minRepos) query += `+repos:>=${form.minRepos}`;
+      const result = await fetchAdvancedUsers({
+        username: form.username,
+        location: form.location,
+        minRepos: form.minRepos,
+      });
 
-      const result = await searchUsers(query);
-      setUsers(result.items);
+      setUsers(result);
     } catch (err) {
       console.error(err);
       setError("Looks like we can't find the user(s)");
@@ -83,7 +78,9 @@ const Search = () => {
             {users.map((user) => (
               <div key={user.id} className="result-card">
                 <img src={user.avatar_url} alt={user.login} />
-                <h2>{user.login}</h2>
+                <h2>{user.name || user.login}</h2>
+                <p>{user.location || 'No location provided'}</p>
+                <p>{user.public_repos} Repositories</p>
                 <a
                   href={user.html_url}
                   target="_blank"
