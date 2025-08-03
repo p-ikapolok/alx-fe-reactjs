@@ -8,6 +8,13 @@ const Search = () => {
     location: '',
     minRepos: ''
   });
+  
+  const result = await searchUsers({
+  username: form.username,
+  location: form.location,
+  minRepos: form.minRepos,
+ });
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
