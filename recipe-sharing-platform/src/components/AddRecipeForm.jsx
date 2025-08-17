@@ -28,14 +28,13 @@ const AddRecipeForm = () => {
       id: Date.now(),
       title,
       summary: steps.substring(0, 60) + "...",
-      image: "https://via.placeholder.com/300x200", // default placeholder
+      image: "https://via.placeholder.com/300x200",
       ingredients: ingredients.split(",").map((i) => i.trim()),
       instructions: steps.split("\n"),
     };
 
     console.log("✅ New Recipe Submitted:", newRecipe);
 
-    // Reset form after submission
     setTitle("");
     setIngredients("");
     setSteps("");
@@ -43,57 +42,60 @@ const AddRecipeForm = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-6 mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-center">Add New Recipe</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-6 mt-8">
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Add New Recipe</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
         {/* Title */}
-        <div>
-          <label className="block font-semibold mb-2">Recipe Title</label>
+        <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+          <label className="block font-semibold mb-2 md:mb-0 md:w-1/3">Recipe Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+            className="w-full md:w-2/3 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
             placeholder="Enter recipe title"
           />
-          {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
         </div>
+        {errors.title && <p className="text-red-500 text-sm">{errors.title}</p>}
 
         {/* Ingredients */}
-        <div>
-          <label className="block font-semibold mb-2">Ingredients</label>
+        <div className="flex flex-col md:flex-row md:items-start md:gap-4">
+          <label className="block font-semibold mb-2 md:mb-0 md:w-1/3">Ingredients</label>
           <textarea
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
-            className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+            className="w-full md:w-2/3 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
             placeholder="Enter ingredients separated by commas"
             rows="3"
           ></textarea>
-          {errors.ingredients && (
-            <p className="text-red-500 text-sm">{errors.ingredients}</p>
-          )}
         </div>
+        {errors.ingredients && (
+          <p className="text-red-500 text-sm">{errors.ingredients}</p>
+        )}
 
         {/* Preparation Steps */}
-        <div>
-          <label className="block font-semibold mb-2">Preparation Steps</label>
+        <div className="flex flex-col md:flex-row md:items-start md:gap-4">
+          <label className="block font-semibold mb-2 md:mb-0 md:w-1/3">Preparation Steps</label>
           <textarea
             value={steps}
             onChange={(e) => setSteps(e.target.value)}
-            className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+            className="w-full md:w-2/3 border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
             placeholder="Write each step on a new line"
             rows="5"
           ></textarea>
-          {errors.steps && <p className="text-red-500 text-sm">{errors.steps}</p>}
         </div>
+        {errors.steps && <p className="text-red-500 text-sm">{errors.steps}</p>}
 
         {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
-        >
-          Submit Recipe
-        </button>
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="w-full md:w-1/3 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+          >
+            Submit Recipe
+          </button>
+        </div>
       </form>
     </div>
   );
