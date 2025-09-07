@@ -1,79 +1,69 @@
 import { useState } from "react";
 
 export default function RegistrationForm() {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: ""
-  });
-  const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});   // ✅ track validation errors
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let newErrors = {};
 
-    if (!formData.username || !formData.email || !formData.password) {
-      setError("⚠️ All fields are required!");
-      return;
+    if (!username) {
+      newErrors.username = "Username is required";   // ✅ validation
+    }
+    if (!email) {
+      newErrors.email = "Email is required";
+    }
+    if (!password) {
+      newErrors.password = "Password is required";
     }
 
-    setError("");
-    console.log("User Registered (Controlled):", formData);
+    setErrors(newErrors);   // ✅ save errors
 
-    alert("✅ User registered successfully (Controlled)!");
-    setFormData({ username: "", email: "", password: "" });
+    // if no errors, proceed
+    if (Object.keys(newErrors).length === 0) {
+      console.log({ username, email, password });
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-6 bg-white border border-gray-200 rounded-2xl shadow-lg"
-    >
-      <h2 className="text-xl font-bold mb-4 text-blue-600">
-        Controlled Registration Form
-      </h2>
+    <form onSubmit={handleSubmit} className="registration-form">
+      <div>
+        <label htmlFor="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        {errors.username && <p style={{ color: "red" }}>{errors.username}</p>}
+      </div>
 
-      {error && (
-        <p className="text-red-500 mb-2 font-medium">{error}</p>
-      )}
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
+      </div>
 
-      <input
-        type="text"
-        name="username"
-        placeholder="Username"
-        value={formData.username}
-        onChange={handleChange}
-        className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-      />
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        value={formData.email}
-        onChange={handleChange}
-        className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-        className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-      />
+      <div>
+        <label htmlFor="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {errors.password && <p style={{ color: "red" }}>{errors.password}</p>}
+      </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-      >
-        Register
-      </button>
+      <button type="submit">Register</button>
     </form>
   );
 }

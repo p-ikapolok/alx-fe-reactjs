@@ -1,16 +1,20 @@
-import RegistrationForm from "./components/RegistrationForm";
-import FormikForm from "./components/FormikForm";
+// src/App.jsx
+import React from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import PostsComponent from "./components/PostsComponent";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <h1 className="text-3xl font-extrabold text-center mb-8 text-gray-700">
-        User Registration
-      </h1>
-      <RegistrationForm />
-      <FormikForm />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="App">
+        <h1>React Query Demo</h1>
+        <PostsComponent />
+      </div>
+    </QueryClientProvider>
   );
 }
 
 export default App;
+
