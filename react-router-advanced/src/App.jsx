@@ -1,16 +1,37 @@
-import RegistrationForm from "./components/RegistrationForm";
-import FormikForm from "./components/FormikForm";
+import { Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Profile from "./pages/Profile";
+import BlogPost from "./pages/BlogPost";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <h1 className="text-3xl font-extrabold text-center mb-8 text-gray-700">
-        User Registration
-      </h1>
-      <RegistrationForm />
-      <FormikForm />
+    <div>
+      <nav>
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/about">About</Link> |{" "}
+        <Link to="/profile">Profile</Link> |{" "}
+        <Link to="/blog/1">Blog Post 1</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+
+        <Route
+          path="/profile/*"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/blog/:id" element={<BlogPost />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </div>
   );
 }
-
-export default App;
